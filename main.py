@@ -8,6 +8,11 @@ try:
                             database="homework_db")
     cur = conn.cursor()
 
+    cur.execute("""
+                        DROP TABLE Phones;
+                        DROP TABLE Client;
+                        """)
+
     def create_db(conn):
             cur.execute("""
                         CREATE TABLE IF NOT EXISTS Client(
@@ -18,7 +23,8 @@ try:
                                 """)
             cur.execute("""
                         CREATE TABLE IF NOT EXISTS Phones(
-                        phone DECIMAL UNIQUE CHECK(phone <= 99999999999),
+                        phone_id SERIAL PRIMARY KEY,
+                        phone VARCHAR(20),
                         client_id INTEGER REFERENCES Client(client_id));
                                 """)
             print("Таблица/цы успешно создана/ны!")
@@ -29,53 +35,62 @@ try:
                     INSERT INTO Client(first_name, last_name, email)
                     VALUES(%s, %s, %s)
                     RETURNING client_id, first_name, last_name, email;
-                        """, (first_name, last_name, email))
-            row_count = cur.rowcount
-            print(row_count, "Запись(и) успешно вставлена(ы) ​​в таблицу")
+                        """, (first_name, last_name, email))            
+            print("Запись успешно добавлена ​​в таблицу")
+            print(cur.fetchone())
             return cur.fetchone()
             
         
     def add_phone(conn, client_id, phone):           
             cur.execute("""
-                    INSERT INTO Phones(phone, client_id)
+                    INSERT INTO Phones(client_id, phone)
                     VALUES(%s, %s)
-                    RETURNING client_id, first_name, last_name, email;
-                    """, (client_id, phone,))
-            row_count = cur.rowcount
-            print(row_count, "Запись(и) успешно вставлена(ы) ​​в таблицу")
+                    RETURNING client_id, phone;
+                    """, (client_id, phone,))         
+            print( "Запись успешно добавлена ​​в таблицу")
+            print(cur.fetchone())
             return cur.fetchone()
 
         
-    def change_client(conn, client_id, first_name=None, last_name=None, email=None, phone=None):          
+    def change_client(conn, first_name, last_name, email):          
             cur.execute("""
                     UPDATE Client
-                    SET first_name=%s, last_name=%s, email=%s
-                    WHERE client_id=s%
+                    SET first_name=%s, last_name=%s, email=%s 
+                    WHERE client_id=%s
                     RETURNING client_id, first_name, last_name, email;
-                    """, (client_id, first_name, last_name, email, phone,))
-            row_count = cur.rowcount
-            print(row_count, "Записи обновлены")
+                    """, (first_name, last_name, email,))           
+            print("Записи обновлены")
+            print(cur.fetchall())
+            return cur.fetchall()
+       
+    
+    def change_phone(conn, phone):          
+            cur.execute("""
+                    UPDATE Phones
+                    SET phone=%s
+                    WHERE client_id=%s
+                    RETURNING client_id, phone;
+                    """, (phone,))            
+            print("Записи обновлены")
+            print(cur.fetchall())
             return cur.fetchall()
         
     
-    def change_phone(conn, client_id, phone):          
-            cur.execute("""
-                    UPDATE Phones
-                    SET phone=s%
-                    WHERE client_id=%s
-                    RETURNING client_id, phone;
-                    """, (client_id, phone,))
-            row_count = cur.rowcount
-            print(row_count, "Записи обновлены")
+    def find_client(conn, first_name, last_name, email, phone):           
+            cur.execute("""SELECT c.first_name, c.last_name, c.email, p.phone FROM Client c
+                    LEFT JOIN Phones p ON c.client_id = p.client_id
+                    WHERE c.first_name=%s OR c.last_name=%s OR c.email=%s OR p.phone=%s;
+                    """, (first_name, last_name, email, phone,))
+            print(cur.fetchall())
             return cur.fetchall()
-        
-        
+
+
     def delete_phone(conn, client_id, phone):
             cur.execute("""DELETE phone FROM Phones
                     WHERE client_id=%s;
                     """, (client_id, phone,))
-            row_count = cur.rowcount
-            print(row_count, "Записи удалены!")
+            print("Записи удалены!")
+            print(cur.fetchall())
             return cur.fetchall()
 
   
@@ -83,19 +98,11 @@ try:
             cur.execute("""DELETE FROM Client
                     WHERE client_id=%s;
                     """, (client_id,))
-            row_count = cur.rowcount
-            print(row_count, "Записи удалены!")
-            return cur.fetchall()
-        
-    
-    def find_client(conn, first_name=None, last_name=None, email=None, phone=None):           
-            cur.execute("""SELECT c.first_name, c.last_name, c.email, p.phone FROM Client c
-                    LEFT JOIN Phones p ON c.client_id = p.client_id
-                    WHERE c.first_name=%s OR c.last_name=%s OR c.email=%s OR p.phone=%s;
-                    """, (first_name, last_name, email, phone,))
+            print("Записи удалены!")
+            print(cur.fetchall()) 
             return cur.fetchall()
 
-        
+
     print('Создать таблицы "1" ') 
     print('Добавить клиента "2"') 
     print('Добавить номер телефона клиента "3" ') 
@@ -118,17 +125,17 @@ try:
         elif function == '3':
                 client_id = input('Введите id клиента: ')
                 phone = input('Введите телефон клиента: ')   
-                add_phone(conn, client_id, phone)
+                add_phone(conn, client_id, phone)               
         elif function == '4':
                 client_id = input('Введите id клиента: ')
                 first_name = input('Введите новое имя клиента: ')
                 last_name = input('Введите новую фамилию клиента: ')
                 email = input('Введите новый Email клиента: ')
-                change_client(conn, client_id, first_name, last_name, email)
+                change_client(conn, first_name, last_name, email)
         elif function == '5':
                 client_id = input('Введите id клиента: ')  
-                phone = input('Введите телефон клиента: ')
-                change_phone(conn, client_id, phone)
+                phone = input('Введите новый телефон клиента: ')
+                change_phone(conn, phone)
         elif function == '6':
                 first_name = input('Введите имя клиента: ')
                 last_name = input('Введите фамилию клиента: ')
@@ -149,6 +156,6 @@ try:
                 print("Соединение с PostgreSQL закрыто")               
         else:
             print('Введена неверная команда!')
-        break
+            break
 except (Exception, Error) as error:
     print("Ошибка при работе с PostgreSQL", error)
