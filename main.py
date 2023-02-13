@@ -27,7 +27,7 @@ try:
     def add_client(conn, first_name, last_name, email):
             cur.execute("""
                     INSERT INTO Client(first_name, last_name, email)
-                    VALUES(first_name=%s, last_name=%s, email=%s)
+                    VALUES(%s, %s, %s)
                     RETURNING client_id, first_name, last_name, email;
                         """, (first_name, last_name, email))
             row_count = cur.rowcount
@@ -38,7 +38,7 @@ try:
     def add_phone(conn, client_id, phone):           
             cur.execute("""
                     INSERT INTO Phones(phone, client_id)
-                    VALUES(phone, client_id)
+                    VALUES(%s, %s)
                     RETURNING client_id, first_name, last_name, email;
                     """, (client_id, phone,))
             row_count = cur.rowcount
@@ -95,6 +95,7 @@ try:
                     """, (first_name, last_name, email, phone,))
             return cur.fetchall()
 
+        
     print('Создать таблицы "1" ') 
     print('Добавить клиента "2"') 
     print('Добавить номер телефона клиента "3" ') 
