@@ -37,8 +37,7 @@ try:
                 VALUES(%s, %s, %s)
                 RETURNING client_id, first_name, last_name, email;
                 """, (first_name, last_name, email, ))            
-            print("Запись успешно добавлена ​​в таблицу")
-            print(cur.fetchone())
+            print("Запись успешно добавлена в таблицу!")
             return cur.fetchone()
             
         
@@ -48,8 +47,7 @@ try:
                 VALUES(%s, %s)
                 RETURNING client_id, phone;
                 """, (client_id, phone, ))         
-            print( "Запись успешно добавлена ​​в таблицу")
-            print(cur.fetchone())
+            print( "Запись успешно добавлена в таблицу!")
             return cur.fetchone()
 
         
@@ -60,8 +58,7 @@ try:
                 WHERE client_id=%s
                 RETURNING client_id, first_name, last_name, email;
                 """, (first_name, last_name, email, client_id, ))           
-            print("Записи обновлены")
-            print(cur.fetchall())
+            print("Записи обновлены!")
             return cur.fetchall()
        
     
@@ -72,8 +69,7 @@ try:
                 WHERE client_id=%s
                 RETURNING client_id, phone;
                 """, (client_id, phone, ))            
-            print("Записи обновлены")
-            print(cur.fetchall())
+            print("Записи обновлены!")
             return cur.fetchall()
         
     
@@ -83,7 +79,6 @@ try:
                 LEFT JOIN Phones p ON c.client_id = p.client_id
                 WHERE c.first_name=%s OR c.last_name=%s OR c.email=%s OR p.phone=%s;
                 """, (first_name, last_name, email, phone, ))
-            print(cur.fetchall())
             return cur.fetchall()
 
 
@@ -94,7 +89,6 @@ try:
                 RETURNING client_id, phone;
                 """, (client_id, phone, ))
             print("Записи удалены!")
-            print(cur.fetchall())
             return cur.fetchall()
 
   
@@ -104,8 +98,7 @@ try:
                 WHERE client_id=%s;
                 """, client_id, )
             print("Записи удалены!")
-            print(cur.fetchall()) 
-            return cur.fetchall()
+
 
     def select(cur):
             cur.execute("""
@@ -116,7 +109,6 @@ try:
                 SELECT * FROM Phones;
                 """)
             print(cur.fetchall())
-
 
 
     print('Создать таблицы "1" ') 
@@ -133,46 +125,46 @@ try:
     while True:
         function = input('Введите нужную команду: ')
         if function == '1':
-                create_db(cur)
+            create_db(cur)
         elif function == '2':
-                first_name = input('Введите имя клиента: ')
-                last_name = input('Введите фамилию клиента: ')
-                email = input('Введите Email клиента: ')
-                add_client(cur, first_name, last_name, email)
+            first_name = input('Введите имя клиента: ')
+            last_name = input('Введите фамилию клиента: ')
+            email = input('Введите Email клиента: ')
+            add_client(cur, first_name, last_name, email)
         elif function == '3':
-                client_id = input('Введите id клиента: ')
-                phone = input('Введите телефон клиента: ')   
-                add_phone(cur, client_id, phone)               
+            client_id = input('Введите id клиента: ')
+            phone = input('Введите телефон клиента: ')   
+            add_phone(cur, client_id, phone)               
         elif function == '4':
-                client_id = input('Введите id клиента: ')
-                first_name = input('Введите новое имя клиента: ')
-                last_name = input('Введите новую фамилию клиента: ')
-                email = input('Введите новый Email клиента: ')
-                change_client(cur, first_name, last_name, email, client_id)
+            client_id = input('Введите id клиента: ')
+            first_name = input('Введите новое имя клиента: ')
+            last_name = input('Введите новую фамилию клиента: ')
+            email = input('Введите новый Email клиента: ')
+            change_client(cur, first_name, last_name, email, client_id)
         elif function == '5':
-                client_id = input('Введите id клиента: ')  
-                phone = input('Введите новый телефон клиента: ')
-                change_phone(cur, phone, client_id)
+            client_id = input('Введите id клиента: ')  
+            phone = input('Введите новый телефон клиента: ')
+            change_phone(cur, phone, client_id)
         elif function == '6':
-                first_name = input('Введите имя клиента: ')
-                last_name = input('Введите фамилию клиента: ')
-                email = input('Введите Email клиента: ')
-                phone = input('Введите телефон клиента: ')
-                find_client(cur, first_name, last_name, email, phone)
+            first_name = input('Введите имя клиента: ')
+            last_name = input('Введите фамилию клиента: ')
+            email = input('Введите Email клиента: ')
+            phone = input('Введите телефон клиента: ')
+            find_client(cur, first_name, last_name, email, phone)
         elif function == '7':
-                client_id = input('Введите id клиента: ')
-                phone = input('Введите телефон клиента, который надо удалить: ')
-                delete_phone(cur, client_id, phone)
+            client_id = input('Введите id клиента: ')
+            phone = input('Введите телефон клиента, который надо удалить: ')
+            delete_phone(cur, client_id, phone)
         elif function == '8':
-                client_id = input('Введите id клиента: ')
-                delete_client(cur, client_id)
+            client_id = input('Введите id клиента: ')
+            delete_client(cur, client_id)
         elif function == '9':
-                select(cur)   
+            select(cur)   
         elif function == '10':
             if conn:
                 cur.close()
                 conn.close()
-                print("Соединение с PostgreSQL закрыто")               
+                print("Соединение с PostgreSQL закрыто!")               
         else:
             print('Введена неверная команда!')
             break
