@@ -37,7 +37,8 @@ try:
                 VALUES(%s, %s, %s)
                 RETURNING client_id, first_name, last_name, email;
                 """, (first_name, last_name, email, ))            
-            print("Запись успешно добавлена в таблицу!")
+            print("Запись успешно добавлена ​​в таблицу!")
+            print(cur.fetchone())
             return cur.fetchone()
             
         
@@ -47,7 +48,8 @@ try:
                 VALUES(%s, %s)
                 RETURNING client_id, phone;
                 """, (client_id, phone, ))         
-            print( "Запись успешно добавлена в таблицу!")
+            print( "Запись успешно добавлена ​​в таблицу!")
+            print(cur.fetchone())
             return cur.fetchone()
 
         
@@ -59,6 +61,7 @@ try:
                 RETURNING client_id, first_name, last_name, email;
                 """, (first_name, last_name, email, client_id, ))           
             print("Записи обновлены!")
+            print(cur.fetchall())
             return cur.fetchall()
        
     
@@ -70,6 +73,7 @@ try:
                 RETURNING client_id, phone;
                 """, (client_id, phone, ))            
             print("Записи обновлены!")
+            print(cur.fetchall())
             return cur.fetchall()
         
     
@@ -90,6 +94,7 @@ try:
                 RETURNING client_id, phone;
                 """, (client_id, phone, ))
             print("Записи удалены!")
+            print(cur.fetchall())
             return cur.fetchall()
 
   
@@ -165,7 +170,8 @@ try:
             if conn:
                 cur.close()
                 conn.close()
-                print("Соединение с PostgreSQL закрыто!")               
+                print("Соединение с PostgreSQL закрыто!")     
+                break          
         else:
             print('Введена неверная команда!')
             break
