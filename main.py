@@ -79,6 +79,7 @@ try:
                 LEFT JOIN Phones p ON c.client_id = p.client_id
                 WHERE c.first_name=%s OR c.last_name=%s OR c.email=%s OR p.phone=%s;
                 """, (first_name, last_name, email, phone, ))
+            print(cur.fetchall())
             return cur.fetchall()
 
 
