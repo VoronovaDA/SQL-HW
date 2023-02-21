@@ -69,7 +69,7 @@ with psycopg2.connect(database="homework_db", user="postgres", password="7404") 
         with conn.cursor() as cur:          
             cur.execute("""
                 UPDATE Client
-                SET first_name=%s OR last_name=%s OR email=%s 
+                SET email=%s 
                 WHERE client_id=%s
                 RETURNING client_id, first_name, last_name, email;
                 """, (email, client_id, ))           
