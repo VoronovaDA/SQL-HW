@@ -56,7 +56,7 @@ with psycopg2.connect(database="homework_db", user="postgres", password="7404") 
         with conn.cursor() as cur:          
             cur.execute("""
                 UPDATE Client
-                SET first_name=%s AND last_name=%s  
+                SET first_name=%s , last_name=%s  
                 WHERE client_id=%s
                 RETURNING client_id, first_name, last_name, email;
                 """, (first_name, last_name, client_id, ))           
@@ -169,20 +169,21 @@ with psycopg2.connect(database="homework_db", user="postgres", password="7404") 
             print('"2" Email клиента')
             print('"3" Телефон клиента')
             task = input('Введите нужную команду: ')
-            client_id = input('Введите id клиента: ')
             if task == "1":
+                client_id = input('Введите id клиента: ')
                 first_name = input('Введите новое имя клиента: ')
                 last_name = input('Введите новую фамилию клиента: ')
                 change_client(cur, first_name, last_name, client_id)
             elif task == "2":
+                client_id = input('Введите id клиента: ')
                 email = input('Введите новый Email клиента: ')
                 change_email(cur, email, client_id)
             elif task == "3":
+                client_id = input('Введите id клиента: ')
                 phone = input('Введите новый телефон клиента: ')
                 change_phone(cur, phone, client_id)
             else:
-                print('Введена неверная команда!')
-                break
+                print('Введена неверная команда!')                
         elif function == '5':
             first_name = input('Введите имя клиента: ')
             last_name = input('Введите фамилию клиента: ')
@@ -202,8 +203,7 @@ with psycopg2.connect(database="homework_db", user="postgres", password="7404") 
             if conn:
                 cur.close()
                 conn.close()
-                print("Соединение с PostgreSQL закрыто!")     
-                break          
+                print("Соединение с PostgreSQL закрыто!")
+                break                               
         else:
             print('Введена неверная команда!')
-            break
